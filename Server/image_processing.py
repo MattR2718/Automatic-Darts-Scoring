@@ -9,7 +9,9 @@ stream = cv.VideoCapture(0)
 counter = 0
 config_coord = []
 x_factor = 1
+x_start = 0
 y_factor = 1
+y_start = 0
 
 def get_mouse_coordinates(event, x, y, flags, param):
     global counter
@@ -23,6 +25,8 @@ def config():
     global counter
     global x_factor
     global y_factor
+    global x_start
+    global y_start
     cv.namedWindow("Darts")
     cv.setMouseCallback("Darts", get_mouse_coordinates)
 
@@ -40,7 +44,8 @@ def config():
     #stream.release()
     cv.destroyAllWindows()
     print(config_coord)
-
+    x_start = config_coord[1][0]
+    y_start = config_coord[3][1]
     x_factor = 2/(config_coord[0][0]-config_coord[1][0])
     y_factor = 2/(config_coord[3][1]-config_coord[2][1])
 
@@ -57,6 +62,8 @@ def config():
 def DartLocation():
     global x_factor
     global y_factor
+    global x_start
+    global y_start
     sBackSub = cv.createBackgroundSubtractorMOG2()
     temp,lastFrame = stream.read()
     lastFrame_contour = None
@@ -126,7 +133,7 @@ def DartLocation():
         
         if noMovement:        
              
-            text = f"X: +{'{0:.3f}'.format((x_bot*x_factor)-1)}+, Y: +{'{0:.3f}'.format((y_bot*y_factor)-1)}"
+            text = f"X: +{'{0:.3f}'.format(((x_bot-x_start)*x_factor)-1)}+, Y: +{'{0:.3f}'.format(((y_bot-y_start)*y_factor)-1)}"
             org = (50, 50)   
             font = cv.FONT_HERSHEY_SIMPLEX  
             fontScale = 0.5 
