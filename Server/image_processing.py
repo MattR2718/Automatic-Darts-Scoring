@@ -43,7 +43,7 @@ while True:
         #AREA THRESHOLD PART OF CONFIG, DEPENDANT ON HOW FAR AWAY
         #DART IS FROM CAMERA
 
-        if area > 800:
+        if area > 900:
             if (area > maxArea):
                 maxArea = area
                 lastFrame = frame.copy()
@@ -65,7 +65,7 @@ while True:
     noMovement = True
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 750:
+        if area > 900:
             noMovement = False
     
     if noMovement:
