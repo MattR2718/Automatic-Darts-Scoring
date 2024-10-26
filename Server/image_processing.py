@@ -7,6 +7,7 @@ stream = cv.VideoCapture(0)
 
 sBackSub = cv.createBackgroundSubtractorMOG2()
 lastFrame = None
+lastFrame_contour = None
 while True:
     ret, frame = stream.read()
     if frame is None:
@@ -41,7 +42,8 @@ while True:
         if area > 750:
             lastFrame = frame.copy()
             lastFrame_mask = fgMask.copy()
-            print(contour)
+            lastFrame_contour = contour
+            print("contour",contour)
             x,y,w,h = cv.boundingRect(contour)
             cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
             cv.rectangle(lastFrame,(x,y),(x+w,y+h),(0,255,0),2)
@@ -53,7 +55,9 @@ while True:
 
 stream.release()
 cv.destroyAllWindows()
+print("STREAM ENDED")
 if lastFrame is not None:
+    print("CONTOUR COORDINATES: ",lastFrame_contour)
     cv.imshow("Last detected frame",lastFrame)
     cv.imshow("Last detected frame masked",lastFrame_mask)
     cv.waitKey(0)
