@@ -5,7 +5,7 @@ import cv2 as cv
 stream = cv.VideoCapture(0)
 
 
-sBackSub = cv.createBackgroundSubtractorMOG2()
+sBackSub = cv.createBackgroundSubtractorKNN()
 temp,lastFrame = stream.read()
 lastFrameG = cv.cvtColor(lastFrame,cv.COLOR_BGR2GRAY)
 lastFrame_contour = None
@@ -57,6 +57,7 @@ while True:
                 
             maxFrames.append(frame)
             maxFramesM.append(fgMask)
+            
             org = (50,50)
             font = cv.FONT_HERSHEY_SIMPLEX
             fontScale = 1
@@ -72,41 +73,14 @@ while True:
             noMovement = False
     
     if noMovement:
-        sum =0
-        for a in maxAreas:
-            sum = sum + a
-        if len(maxAreas):
-            avgArea = sum/len(maxAreas)
-        else:
-            avgArea = 0
-
-        closestContour = None
-        diff = 99999999
-        ind = 0
-        for i in range(len(maxContours)):
-            area = cv.contourArea(maxContours[i])
-            if (avgArea - area < diff):
-                diff = avgArea - area
-                closestContour = maxContours[i]
-                ind = i
-        if maxFrames and maxFramesM:
-            lastFrame = maxFrames[ind]
-            lastFrame_mask = maxFramesM[ind]
-        else:
-            lastFrame = None
-            lastFrame_mask = None
-        lastFrame_contour = closestContour
-        if lastFrame_contour is not None:
-            Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
-        else:
-            Bottom = None
+         
         cv.circle(lastFrame, Bottom, 8, (0,0, 255), -1)
         cv.drawContours(frame,closestContour,-1,(0,255,0),2)
         cv.drawContours(lastFrame,closestContour,-1,(0,255,0),2)
 
-        if lastFrame is not None and lastFrame_mask is not None:
-            cv.imshow("Last Detected Frame",lastFrame)
-            cv.imshow("Last Detected Frame Mask",lastFrame_mask)
+         
+        cv.imshow("Last Detected Frame",lastFrame)
+        cv.imshow("Last Detected Frame Mask",lastFrame_mask)
         maxArea = 0
         maxContours = []
         maxAreas = []
