@@ -25,6 +25,13 @@ int main(int argc, char** argv){
     players.emplace_back(Player());
     players.emplace_back(Player());
 
+    players[0].setTurn(true);
+    players[1].setTurn(false);
+
+    players[0].setOpTurnPtr(players[1].getTurnPtr());
+    players[1].setOpTurnPtr(players[0].getTurnPtr());
+
+
     auto guiFunction = [&players]() {
 
         ImGui::ShowDemoWindow();
