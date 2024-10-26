@@ -1,7 +1,6 @@
 import socket
 import threading
 import time
-import pickle
 import json
 
 HEADER = 64  # Bytes
