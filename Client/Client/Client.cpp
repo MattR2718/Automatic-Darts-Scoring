@@ -19,7 +19,7 @@ int main()
         boost::asio::io_context io_context;
 
         //std::string server_ip = boost::asio::ip::host_name();
-        std::string server_ip = "192.168.138.121";  // Change address !!
+        std::string server_ip = "192.168.138.80";  // Change address !!
 
         ClientClass client(io_context, server_ip);
 
