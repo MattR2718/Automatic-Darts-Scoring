@@ -51,12 +51,12 @@ while True:
         #DART IS FROM CAMERA
 
         if area > 900:
-            if (area > maxArea):
-                maxContours.append(contour)
-                maxAreas.append(area)
-                maxArea = area
-                maxFrames.append(frame)
-                maxFramesM.append(fgMask)
+              
+            maxContours.append(contour)
+            maxAreas.append(area)
+                
+            maxFrames.append(frame)
+            maxFramesM.append(fgMask)
             org = (50,50)
             font = cv.FONT_HERSHEY_SIMPLEX
             fontScale = 1
