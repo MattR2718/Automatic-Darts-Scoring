@@ -47,7 +47,7 @@ while True:
             print("contour",contour)
             x,y,w,h = cv.boundingRect(contour)
             cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
-            cv.rectangle(lastFrame,(x,y),(x+w,y+h),(0,255,0),2)
+            cv.rectangle(lastFrame,(x,y+(h-5)),(x+w,y+h),(0,255,0),2)
         
     
     noMovement = True
@@ -67,3 +67,6 @@ while True:
 stream.release()
 cv.destroyAllWindows()
 print("STREAM ENDED")
+
+
+## GET COORDINATES OF LOWEST point in contour
