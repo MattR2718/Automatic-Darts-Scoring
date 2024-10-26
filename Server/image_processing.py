@@ -44,11 +44,14 @@ while True:
         if area > 750:
             lastFrame = frame.copy()
             lastFrame_mask = fgMask.copy()
+            #lastFrame_mask = cv.putText(lastFrame_mask, '')
             lastFrame_contour = contour
             print("contour",contour)
             x,y,w,h = cv.boundingRect(contour)
-            cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
-            cv.rectangle(lastFrame,(x,y),(x+w,y+h),(0,255,0),2)
+            
+            cv.drawContours(frame,contour,-1,(0,255,0),4)
+            #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
+            cv.drawContours(lastFrame,contour,-1,(0,255,0),4)
         
     
     noMovement = True
@@ -65,6 +68,9 @@ while True:
     cv.imshow('Stream',frame)
     if (cv.waitKey(1)& 0xFF == ord('q')):
         break
+
+
+
 
 stream.release()
 cv.destroyAllWindows()
