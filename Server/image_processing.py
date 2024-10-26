@@ -34,6 +34,7 @@ while True:
     #find contours
     contours, hierarchy = cv.findContours(fgMask_th, cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
+    maxArea = 0
     for contour in contours:
         #calculates area of contours, and only outputs contours
         #greater than threshold to remove redundancies and noise
@@ -42,23 +43,22 @@ while True:
         #DART IS FROM CAMERA
 
         if area > 800:
-            lastFrame = frame.copy()
-            lastFrame_mask = fgMask.copy()
-            lastFrame_contour = contour
-            Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
-            cv.circle(lastFrame, Bottom, 8, (255, 255, 0), -1)
+            if (area > maxArea):
+                maxArea = area
+                lastFrame = frame.copy()
+                lastFrame_mask = fgMask.copy()
+                lastFrame_contour = contour
+                Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
+                cv.circle(lastFrame, Bottom, 8, (255, 255, 0), -1)
+                cv.drawContours(frame,contour,-1,(0,255,0),2)
+                #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
+                cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
             org = (50,50)
             font = cv.FONT_HERSHEY_SIMPLEX
             fontScale = 1
             color = (0,0,0)
             thickness = 2
             #lastFrame_mask = cv.putText(lastFrame_mask, Bottom,org, font, fontScale, color, thickness, cv.LINE_AA)
-            print("contour",contour)
-            x,y,w,h = cv.boundingRect(contour)
-            
-            cv.drawContours(frame,contour,-1,(0,255,0),2)
-            #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
-            cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
         
     
     noMovement = True
