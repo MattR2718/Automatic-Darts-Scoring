@@ -21,7 +21,6 @@ def handle_client(conn, addr):
         # Example object to send
         coordinates = [(10, 20), (30, 40), (50, 60)]
         send_object(conn, coordinates)
-        time.sleep(5)  # Adjust this delay as needed
         
     conn.close()
 
