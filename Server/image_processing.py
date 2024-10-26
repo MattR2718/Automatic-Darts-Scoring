@@ -1,7 +1,9 @@
 import cv2 as cv
 
 
+#Change to camera
 stream = cv.VideoCapture(0)
+
 
 sBackSub = cv.createBackgroundSubtractorMOG2()
 
