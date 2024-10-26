@@ -5,7 +5,7 @@ import cv2 as cv
 stream = cv.VideoCapture(0)
 
 
-sBackSub = cv.createBackgroundSubtractorMOG2(history=1000)
+sBackSub = cv.createBackgroundSubtractorMOG2()
 temp,lastFrame = stream.read()
 lastFrame_contour = None
 temp,lastFrame_mask = stream.read()
