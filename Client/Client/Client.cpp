@@ -188,9 +188,10 @@ int getScore(double x, double y) {
     return 0;
 }
 
+//----------------------------Just Scoring Above-----------------------------------------------------
 
-int main()
-{
+int main(){
+    std::vector<Point> points = {};
     try {
         boost::asio::io_context io_context;
 
@@ -199,9 +200,9 @@ int main()
         ClientClass client(io_context, server_ip);
 
         // Listen for messages from the server in a separate thread
-        std::thread listener_thread([&client]() {
-            client.listen();
-            });
+        std::thread listener_thread([&client, &points](){
+            client.listen(points);
+        });
 
         // Join the listener thread to the main thread
         listener_thread.join();
@@ -210,6 +211,5 @@ int main()
     catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-
     return 0;
 }
