@@ -1,5 +1,5 @@
 import cv2 as cv
-
+import 
 
 #Change to camera
 stream = cv.VideoCapture(0)

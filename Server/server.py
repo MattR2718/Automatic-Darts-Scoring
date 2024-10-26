@@ -1,6 +1,5 @@
 import socket
 import threading
-import time
 import json
 
 HEADER = 64  # Bytes
