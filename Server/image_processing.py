@@ -97,7 +97,7 @@ def DartLocation():
             #AREA THRESHOLD PART OF CONFIG, DEPENDANT ON HOW FAR AWAY
             #DART IS FROM CAMERA
             #print(contour)
-            if area > 900:
+            if area > 100:
                 if (area > maxArea):
                     maxArea = area
                     lastFrame = frame.copy()
@@ -121,7 +121,7 @@ def DartLocation():
         noMovement = True
         for contour in contours:
             area = cv.contourArea(contour)
-            if area > 900:
+            if area > 100:
                 noMovement = False
         
         if noMovement:        
