@@ -8,6 +8,7 @@ stream = cv.VideoCapture(0)
 sBackSub = cv.createBackgroundSubtractorMOG2()
 temp,lastFrame = stream.read()
 lastFrame_contour = None
+temp,lastFrame_mask = stream.read()
 while True:
     ret, frame = stream.read()
     if frame is None:
@@ -58,7 +59,7 @@ while True:
     
     if noMovement:
         cv.imshow("Last Detected Frame",lastFrame)
-        cv.imshow("Last Detected Frame",lastFrame_mask)
+        cv.imshow("Last Detected Frame Mask",lastFrame_mask)
     #quit stream
 
     cv.imshow('Stream',frame)
