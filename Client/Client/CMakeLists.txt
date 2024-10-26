@@ -7,7 +7,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 
     
 # Add source to this project's executable.
-add_executable (Client "Client.cpp" "Client.h" "ClientClass.h")
+add_executable (Client "Client.cpp" "Client.h" "ClientClass.h"  "DartMaths.h")
 
 target_link_libraries(Client PRIVATE fmt::fmt)
 target_link_libraries(Client PRIVATE Boost::asio)
