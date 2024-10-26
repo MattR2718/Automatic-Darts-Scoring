@@ -5,7 +5,6 @@
 #include <iostream>
 #include <thread>
 #include <cmath>
-#include <ImGui>
 
 #define pi 3.14159265
 
