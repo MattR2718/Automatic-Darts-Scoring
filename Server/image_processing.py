@@ -43,7 +43,7 @@ while True:
         #AREA THRESHOLD PART OF CONFIG, DEPENDANT ON HOW FAR AWAY
         #DART IS FROM CAMERA
 
-        if area > 900:
+        if area > 100 < 300:
             if (area > maxArea):
                 maxArea = area
                 lastFrame = frame.copy()
