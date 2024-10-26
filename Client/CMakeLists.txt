@@ -11,7 +11,8 @@ endif()
 
 project ("Client")
 
+set(CMAKE_CXX_STANDARD 20)
+
 # Include sub-projects.
-add_subdirectory(GUI/hello_imgui)
 add_subdirectory ("Client")
 
