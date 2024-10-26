@@ -50,7 +50,7 @@ while True:
                 lastFrame_mask = fgMask.copy()
                 lastFrame_contour = contour
                 Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
-                cv.circle(lastFrame, Bottom, 8, (255, 255, 0), -1)
+                cv.circle(lastFrame, Bottom, 8, (0,0, 255), -1)
                 cv.drawContours(frame,contour,-1,(0,255,0),2)
                 #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
                 cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
