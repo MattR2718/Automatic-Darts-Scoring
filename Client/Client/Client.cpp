@@ -5,7 +5,6 @@
 #include <iostream>
 #include <thread>
 
-
 const int HEADER = 64; // Bytes
 const int PORT = 5050;
 const std::string DISCONNECT_MESSAGE = "!DISCONNECT";
@@ -15,6 +14,16 @@ const std::string DISCONNECT_MESSAGE = "!DISCONNECT";
 using namespace std;
 
 int main(){
+
+    HelloImGui::Run(
+        [] { ImGui::Text("Hello, world!"); }, // Gui code
+        "Hello!", true);                     // Window title + Window size auto
+
+
+    return 0;
+}
+
+std::vector<Point> getDarts() {
     std::vector<Point> points = {};
     try {
         boost::asio::io_context io_context;
@@ -24,9 +33,9 @@ int main(){
         ClientClass client(io_context, server_ip);
 
         // Listen for messages from the server in a separate thread
-        std::thread listener_thread([&client, &points](){
+        std::thread listener_thread([&client, &points]() {
             client.listen(points);
-        });
+            });
 
         // Join the listener thread to the main thread
         listener_thread.join();
@@ -35,5 +44,6 @@ int main(){
     catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return 0;
+
+    return points;
 }

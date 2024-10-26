@@ -12,5 +12,6 @@ endif()
 project ("Client")
 
 # Include sub-projects.
-add_subdirectory ("Client")
 add_subdirectory(GUI/hello_imgui)
+add_subdirectory ("Client")
+
