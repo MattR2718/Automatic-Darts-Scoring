@@ -1,9 +1,11 @@
 import socket
 import threading
+import time
+import pickle
+import json
 
-HEADER = 64 # Bytes, Modify for length of message
+HEADER = 64  # Bytes
 PORT = 5050
-# Gets IPV4 Address
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
@@ -14,31 +16,38 @@ server.bind(ADDR)
 
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
-
+    
     connected = True
     while connected:
-        # Waiting for message from client
-        msg_length = conn.recv(HEADER).decode(FORMAT)
-        if msg_length: 
-            msg_length = int(msg_length)
-            msg = conn.recv(msg_length).decode(FORMAT)
-
-            if msg == DISCONNECT_MESSAGE:
-                connected = False
-
-            print(f"[{addr}] {msg}")
-            conn.send("Message received!".encode(FORMAT))
+        # Example object to send
+        coordinates = [(10, 20), (30, 40), (50, 60)]
+        send_object(conn, coordinates)
+        time.sleep(5)  # Adjust this delay as needed
+        
     conn.close()
+
+def send_object(conn, obj):
+    # Serialize the object using pickle (converts to byte stream)
+
+    message = json.dumps([{"x": x, "y": y} for x, y in obj]).encode(FORMAT)
+
+    msg_length = len(message)
+    
+    # Send header (message length) and serialized object
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    conn.send(send_length)
+    conn.send(message)
+    print(f"[SERVER] Sent object: {obj}")
 
 def start():
     server.listen()
-    print(f"[LISTENTING] Server is listenting on {SERVER}")
+    print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
-        # Store Connection object (conn), Get Address from conection (addr) 
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
-print("[STARTING] Server is Starting...")
+print("[STARTING] Server is starting...")
 start()
