@@ -45,7 +45,7 @@ def config():
     cv.destroyAllWindows()
     print(config_coord)
     x_start = config_coord[1][0]
-    y_start = config_coord[3][1]
+    y_start = config_coord[2][1]
     x_factor = 2/(config_coord[0][0]-config_coord[1][0])
     y_factor = 2/(config_coord[3][1]-config_coord[2][1])
 
