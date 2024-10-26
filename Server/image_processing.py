@@ -41,17 +41,24 @@ while True:
         #AREA THRESHOLD PART OF CONFIG, DEPENDANT ON HOW FAR AWAY
         #DART IS FROM CAMERA
 
-        if area > 750:
+        if area > 800:
             lastFrame = frame.copy()
             lastFrame_mask = fgMask.copy()
-            #lastFrame_mask = cv.putText(lastFrame_mask, '')
             lastFrame_contour = contour
+            Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
+            cv.circle(lastFrame, Bottom, 8, (255, 255, 0), -1)
+            org = (50,50)
+            font = cv.FONT_HERSHEY_SIMPLEX
+            fontScale = 1
+            color = (0,0,0)
+            thickness = 2
+            #lastFrame_mask = cv.putText(lastFrame_mask, Bottom,org, font, fontScale, color, thickness, cv.LINE_AA)
             print("contour",contour)
             x,y,w,h = cv.boundingRect(contour)
             
-            cv.drawContours(frame,contour,-1,(0,255,0),4)
+            cv.drawContours(frame,contour,-1,(0,255,0),2)
             #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
-            cv.drawContours(lastFrame,contour,-1,(0,255,0),4)
+            cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
         
     
     noMovement = True
