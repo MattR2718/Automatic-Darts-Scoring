@@ -10,8 +10,8 @@ using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
 struct Point {
-    int x;
-    int y;
+    double x;
+    double y;
 };
 
 class ClientClass {
@@ -25,7 +25,7 @@ public:
         boost::asio::connect(socket_, endpoints);
     }
 
-    void listen() {
+    void listen(std::vector<Point>& points) {
         while (true) {
             try {
                 // Receive response from server
@@ -51,7 +51,7 @@ public:
                 //std::cout << "Received an object from the server: " << received_data << std::endl;
 
                 // Parse the received JSON data into a vector of Points
-                std::vector<Point> points = parse_data(received_data);
+                points = parse_data(received_data);
 
                 // Print the points
                 for (const auto& point : points) {
