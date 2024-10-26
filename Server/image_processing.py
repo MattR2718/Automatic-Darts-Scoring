@@ -6,7 +6,7 @@ stream = cv.VideoCapture(0)
 
 
 sBackSub = cv.createBackgroundSubtractorMOG2()
-lastFrame = None
+temp,lastFrame = stream.read()
 lastFrame_contour = None
 while True:
     ret, frame = stream.read()
@@ -14,6 +14,7 @@ while True:
         break
 
 
+    
     #COULD CROP FRAME BEFORE APPLYING MASK
     # ===================================    
 
@@ -47,6 +48,16 @@ while True:
             x,y,w,h = cv.boundingRect(contour)
             cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
             cv.rectangle(lastFrame,(x,y),(x+w,y+h),(0,255,0),2)
+        
+    
+    noMovement = True
+    for contour in contours:
+        area = cv.contourArea(contour)
+        if area > 750:
+            noMovement = False
+    
+    if noMovement:
+        cv.imshow("Last Detected Frame",lastFrame)
     #quit stream
 
     cv.imshow('Stream',frame)
@@ -56,9 +67,3 @@ while True:
 stream.release()
 cv.destroyAllWindows()
 print("STREAM ENDED")
-if lastFrame is not None:
-    print("CONTOUR COORDINATES: ",lastFrame_contour)
-    cv.imshow("Last detected frame",lastFrame)
-    cv.imshow("Last detected frame masked",lastFrame_mask)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
