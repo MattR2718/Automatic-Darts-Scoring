@@ -6,13 +6,15 @@ stream = cv.VideoCapture(0)
 
 
 sBackSub = cv.createBackgroundSubtractorMOG2()
-
+temp,lastFrame = stream.read()
+lastFrame_contour = None
 while True:
     ret, frame = stream.read()
     if frame is None:
         break
 
 
+    
     #COULD CROP FRAME BEFORE APPLYING MASK
     # ===================================    
 
@@ -38,11 +40,30 @@ while True:
         #AREA THRESHOLD PART OF CONFIG, DEPENDANT ON HOW FAR AWAY
         #DART IS FROM CAMERA
 
-        if area > 1000:
-            print(contour)
+        if area > 750:
+            lastFrame = frame.copy()
+            lastFrame_mask = fgMask.copy()
+            lastFrame_contour = contour
+            print("contour",contour)
             x,y,w,h = cv.boundingRect(contour)
-            cv.rectangle(fgMask_th,(x,y),(x+w,y+h),(0,255,0),2)
+            cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+            cv.rectangle(lastFrame,(x,y),(x+w,y+h),(0,255,0),2)
+        
+    
+    noMovement = True
+    for contour in contours:
+        area = cv.contourArea(contour)
+        if area > 750:
+            noMovement = False
+    
+    if noMovement:
+        cv.imshow("Last Detected Frame",lastFrame)
     #quit stream
-    keyboard = cv.waitKey(30)
-    if (keyboard == 'q'):
+
+    cv.imshow('Stream',frame)
+    if (cv.waitKey(1)& 0xFF == ord('q')):
         break
+
+stream.release()
+cv.destroyAllWindows()
+print("STREAM ENDED")
