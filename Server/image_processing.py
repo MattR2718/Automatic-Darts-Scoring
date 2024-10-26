@@ -9,6 +9,7 @@ sBackSub = cv.createBackgroundSubtractorMOG2()
 temp,lastFrame = stream.read()
 lastFrame_contour = None
 temp,lastFrame_mask = stream.read()
+maxArea = 0
 while True:
     ret, frame = stream.read()
     if frame is None:
@@ -34,7 +35,7 @@ while True:
     #find contours
     contours, hierarchy = cv.findContours(fgMask_th, cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
-    maxArea = 0
+     
     for contour in contours:
         #calculates area of contours, and only outputs contours
         #greater than threshold to remove redundancies and noise
@@ -70,6 +71,7 @@ while True:
     if noMovement:
         cv.imshow("Last Detected Frame",lastFrame)
         cv.imshow("Last Detected Frame Mask",lastFrame_mask)
+        maxArea = 0
     #quit stream
 
     cv.imshow('Stream',frame)
