@@ -151,14 +151,18 @@ class Detection:
                 cv.imshow("Last Detected Frame",lastFrame)
                 cv.imshow("Last Detected Frame Mask",lastFrame_mask)
                 maxArea = 0
-                self.server.send_coords(self.x,self.y)
+                #self.server.send_coords(self.x,self.y)
+                if self.server.is_connected():
+                    self.server.send_doubles(self.x, self.y)
             #quit stream
 
 
 
             cv.imshow('Stream',frame)
             if (cv.waitKey(1)& 0xFF == ord('q')):
-                break
+                cv.destroyAllWindows()
+                self.server.stop()
+                return
         
 
  

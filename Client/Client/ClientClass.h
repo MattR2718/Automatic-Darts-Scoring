@@ -43,9 +43,13 @@ public:
                 length_str.erase(std::remove(length_str.begin(), length_str.end(), ' '), length_str.end());
                 std::size_t msg_length = std::stoi(length_str);
 
+                std::cout << "MESSAGE LENGTH: " << msg_length << '\n';
+
                 // receive the actual serialized data
                 std::vector<char> buffer(msg_length);
                 size_t received_length = boost::asio::read(socket_, boost::asio::buffer(buffer));
+
+				std::cout << "RECEIVED LENGTH: " << received_length << '\n';
 
                 // Store the received object in a vector of tuples
                 last_received_object_.clear();
@@ -79,8 +83,13 @@ private:
     std::vector<Point> parse_data(const std::string& data) {
         std::vector<Point> points;
 
+        std::cout << "DATA: \n";
+        std::cout << data << '\n';
+        std::cout << "END DATA\n";
+
         // Parse JSON data
         auto json_data = json::parse(data);
+        std::cout << json_data << '\n';
         for (const auto& item : json_data) {
             Point point;
             point.x = item["x"];
@@ -93,8 +102,8 @@ private:
 };
 
 
-std::vector<Point> getDarts() {
-    std::vector<Point> points = {};
+void getDarts(std::string server_ip, std::vector<Point>& pts) {
+    //std::vector<Point> points = {};
     try {
         boost::asio::io_context io_context;
 
@@ -103,17 +112,16 @@ std::vector<Point> getDarts() {
         ClientClass client(io_context, server_ip);
 
         // Listen for messages from the server in a separate thread
-        std::thread listener_thread([&client, &points]() {
-            client.listen(points);
+        std::thread listener_thread([&client, &pts]() {
+            client.listen(pts);
             });
 
         // Join the listener thread to the main thread
-        listener_thread.join();
+        //listener_thread.join();
 
     }
     catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
 
-    return points;
 }
