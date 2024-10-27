@@ -66,7 +66,7 @@ class Detection:
         self.x_start = self.config_coord[3][0]
         self.y_start = self.config_coord[0][1]
         self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
-        self.y_factor = 2/(self.config_coord[0][1]-self.config_coord[2][1])
+        self.y_factor = 2/(self.config_coord[2][1]-self.config_coord[0][1])
         print(self.config_coord)
 
         while True:
@@ -149,8 +149,8 @@ class Detection:
                     org = (50,50)
                     font = cv.FONT_HERSHEY_SIMPLEX
                     fontScale = 1
-                    color = (0,0,0)
-                    thickness = 2
+                    color = (0,0,255)
+                    thickness = 1
                     #lastFrame_mask = cv.putText(lastFrame_mask, Bottom,org, font, fontScale, color, thickness, cv.LINE_AA)
                 
             
@@ -172,8 +172,8 @@ class Detection:
                 org = (50, 50)   
                 font = cv.FONT_HERSHEY_SIMPLEX  
                 fontScale = 0.5 
-                color = (255,255, 255)   
-                thickness = 2  
+                color = (0,0,255)   
+                thickness = 1 
                 
                 cv.putText(lastFrame, text, org, font, fontScale, color, thickness, cv.LINE_AA)
 
