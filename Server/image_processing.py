@@ -2,7 +2,7 @@ import cv2 as cv
 import time
 
 class Detection:
-    def __init__(self, server):
+    def __init__(self,server):
         self.server = server
         self.stream = cv.VideoCapture(0)
 
@@ -159,5 +159,8 @@ class Detection:
             cv.imshow('Stream',frame)
             if (cv.waitKey(1)& 0xFF == ord('q')):
                 break
+        
+
+ 
 
      

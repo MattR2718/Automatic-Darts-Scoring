@@ -15,6 +15,7 @@ class SocketServer:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
         self.coords = None
+        
 
     def handle_client(self, conn, addr):
         print(f"[NEW CONNECTION] {addr} connected.")
@@ -29,6 +30,8 @@ class SocketServer:
 
     def send_coords(self, x, y):
         self.coords = (x,y)
+    
+     
 
     def send_object(self, conn, obj):
         # Serialize the object using JSON (converts to byte stream)
@@ -58,5 +61,4 @@ if __name__ == "__main__":
     server_thread.start()
     print("[SERVER THREAD] Server is running in the background.")
     img = image_processing.Detection(server)
-    img.config()
-    img.DartLocation()
+    
