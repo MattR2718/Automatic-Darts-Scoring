@@ -1,15 +1,24 @@
 ﻿# CMakeList.txt : CMake project for Client, include source and define
 # project specific logic here.
 #
+
+# Check if the target system is Windows
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # Set the linker flag to use the Windows subsystem
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+endif()
+
 find_package(fmt CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS asio)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(hello-imgui CONFIG REQUIRED)
     
-# Add source to this project's executable.
-# add_executable (Client "Client.cpp" "Client.h" "ClientClass.h"  "DartMaths.h")
-hello_imgui_add_app(Client "Client.cpp" "Client.h" "ClientClass.h"  "DartMaths.h" "player.cpp" "player.h" "mt_client.cpp")
-
+# Check if the target system is Windows
+#if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+#    hello_imgui_add_app(Client WIN32 "Client.cpp" "Client.h" "ClientClass.h"  "DartMaths.h" "player.cpp" "player.h" "mt_client.cpp")
+#else()
+    hello_imgui_add_app(Client "Client.cpp" "Client.h" "ClientClass.h"  "DartMaths.h" "player.cpp" "player.h" "mt_client.cpp")
+#endif()
 target_link_libraries(Client PRIVATE fmt::fmt Boost::asio nlohmann_json::nlohmann_json)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
