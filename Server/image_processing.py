@@ -48,11 +48,38 @@ class Detection:
         
         #stream.release()
         cv.destroyAllWindows()
-        #print(self.config_coord)
+        print(self.config_coord)
+        bull = self.config_coord[4]
+        if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
+            self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
+            self.config_coord[1] = (self.config_coord[1][0],bull[1])
+        else:
+            self.config_coord[1] = (bull[0]+(self.config_coord[3][0]+bull[0]),bull[1])
+            self.config_coord[3] = (self.config_coord[3][0],bull[1])
+        
+        if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
+            self.config_coord[2] = (bull[0],bull[1]-(self.config_coord[2][1]-bull[1]))
+            self.config_coord[0] = (bull[0],self.config_coord[0][1])
+        else:
+            self.config_coord[0] = (bull[0],bull[1]+(self.config_coord[0][1]+bull[1]))
+            self.config_coord[2] = (bull[0],self.config_coord[2][1])
         self.x_start = self.config_coord[1][0]
         self.y_start = self.config_coord[2][1]
-        self.x_factor = 2/(self.config_coord[0][0]-self.config_coord[1][0])
-        self.y_factor = 2/(self.config_coord[3][1]-self.config_coord[2][1])
+        self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
+        self.y_factor = 2/(self.config_coord[0][1]-self.config_coord[2][1])
+        print(self.config_coord)
+
+        while True:
+            ret, frame = self.stream.read()
+            if not ret:
+                break
+            
+            for (x,y) in self.config_coord:
+                cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
+            cv.imshow("Darts", frame)
+
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
 
     def DartLocation(self):
         #global x_factor
@@ -151,16 +178,18 @@ class Detection:
                 cv.imshow("Last Detected Frame",lastFrame)
                 cv.imshow("Last Detected Frame Mask",lastFrame_mask)
                 maxArea = 0
-                self.server.send_coords(self.x,self.y)
+                if self.server.is_connected():
+                    self.server.send_doubles(self.x,self.y)
             #quit stream
 
 
 
             cv.imshow('Stream',frame)
             if (cv.waitKey(1)& 0xFF == ord('q')):
-                break
+                cv.destroyAllWindows()
+                self.server.stop()
+                return
         
 
  
 
-     
