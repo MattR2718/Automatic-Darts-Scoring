@@ -122,7 +122,7 @@ class Detection:
             self.config_coord[7] = (bull[0]-(self.config_coord[5][0]-bull[0]),bull[1])
             self.config_coord[5] = (self.config_coord[5][0],bull[1])
         else:
-            self.config_coord[5] = (bull[0]+(self.config_coord[7][0]+bull[0]),bull[1])
+            self.config_coord[5] = (bull[0]+(bull[0]-self.config_coord[7][0]),bull[1])
             self.config_coord[7] = (self.config_coord[7][0],bull[1])
         
         if (bull[1]-top[1])>(bottom[1]-bull[1]):
@@ -142,7 +142,7 @@ class Detection:
                 break
             
             frame_p = cv.warpPerspective(frame,self.matrix,(460,460))
-            for (x,y) in self.config_coord:
+            for (x,y) in self.config_coord[4:]:
                 cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Callibrate sides",frame_p)
 
