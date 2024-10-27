@@ -75,8 +75,8 @@ class Detection:
 
         print(self.config_coord)
 
-        width = 500
-        height =500
+        width = 460
+        height =460
 
         des_pts = np.float32([[0,0],[width,0],[0,height],[width,height]])
         matrix = cv.getPerspectiveTransform(src_pts,des_pts)
@@ -105,10 +105,11 @@ class Detection:
             if not ret:
                 break
             
-            frame = cv.warpPerspective(frame,matrix,(width,height))
+            frame_p = cv.warpPerspective(frame,matrix,(700,500))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts", frame)
+            cv.imshow("Darts better",frame_p)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
