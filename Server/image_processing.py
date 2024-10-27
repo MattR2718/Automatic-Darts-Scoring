@@ -232,7 +232,9 @@ class Detection:
                 #global x
                 #global y
                 self.x = '{0:.3f}'.format(((self.x_bot-self.x_start)*self.x_factor)-1)
-                self.y = '{0:.3f}'.format(((self.y_bot-self.y_start)*self.y_factor)-1)
+                self.y = ((self.y_bot-self.y_start)*self.y_factor)-1
+                self.y = self.y * (-1)
+                self.y = '{0:.3f}'.format(self.y)
                 #print(self.x,self.y)
                 text = f"X: +{self.x}+, Y: +{self.y}"
                 org = (50, 50)   
