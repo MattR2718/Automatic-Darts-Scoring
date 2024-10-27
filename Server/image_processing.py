@@ -245,7 +245,7 @@ class Detection:
                 
                 cv.putText(lastFrame, text, org, font, fontScale, color, thickness, cv.LINE_AA)
 
-                lastFrame = cv.warpPerspective(lastFrame,self.matrix,(460,460))
+                #lastFrame = cv.warpPerspective(lastFrame,self.matrix,(460,460))
                 cv.imshow("Last Detected Frame",lastFrame)
                 cv.imshow("Last Detected Frame Mask",lastFrame_mask)
                 maxArea = 0
