@@ -95,7 +95,7 @@ class Detection:
             if not ret:
                 break
             
-            frame_p = cv.warpPerspective(frame,self.tMatrix,(800,800))
+            frame_p = cv.warpPerspective(frame,self.tMatrix,(550,550))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
                 cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
@@ -131,7 +131,7 @@ class Detection:
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
 
-            frame = cv.warpPerspective(frame,self.tMatrix,(800,800))
+            frame = cv.warpPerspective(frame,self.tMatrix,(550,550))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
