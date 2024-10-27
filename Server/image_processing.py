@@ -15,6 +15,7 @@ class Detection:
         self.y_start = 0
         self.x = 0
         self.y = 0 
+        self.tMatrix = None
 
         self.config()
         self.DartLocation()
@@ -81,7 +82,7 @@ class Detection:
         src_pts = np.array([left,right,top,bottom],dtype="float32")
         des_pts = np.array([left_d,right_d,top_d,bottom_d],dtype="float32")
 
-        tMatrix = cv.getPerspectiveTransform(src_pts,des_pts)
+        self.tMatrix = cv.getPerspectiveTransform(src_pts,des_pts)
 
 
         diameter = (self.config_coord[4][0]-self.config_coord[3][0])*2
@@ -96,7 +97,7 @@ class Detection:
             if not ret:
                 break
             
-            frame = cv.warpPerspective(frame,tMatrix,(500,500))
+            frame = cv.warpPerspective(frame,self.tMatrix,(800,800))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts", frame)
@@ -130,6 +131,7 @@ class Detection:
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
 
+            frame = cv.warpPerspective(frame,self.tMatrix,(800,800))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
