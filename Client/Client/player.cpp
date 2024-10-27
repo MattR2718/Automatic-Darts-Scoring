@@ -112,10 +112,11 @@ void Player::setOpTurnPtr(bool* t){
 void Player::addPoint(double x, double y){
 	DartMath dm;
 	int score = dm.getScore(x, y);
+	std::cout << "==================SCORE: " << score << '\n';
 	int set = -1;
-	for (int& i : manualLeg) {
-		if (i == 0) {
-			i = score;
+	for (int i = 0; i < manualLeg.size(); i++) {
+		if (manualLeg[i] == 0) {
+			manualLeg[i] = score;
 			set = i;
 			break;
 		}
@@ -127,5 +128,8 @@ void Player::addPoint(double x, double y){
 		turn = !turn;
 		*oppositePlayer = !*oppositePlayer;
 	}
-
+	else if (set == -1) {
+		std::cerr << "Point not set, zero scored\n";
+	}
+	
 }
