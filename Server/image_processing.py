@@ -42,6 +42,8 @@ class Detection:
             if not ret:
                 break
 
+            frame = cv.resize(frame,(800,800))
+
             cv.imshow("Callibrate corners",frame)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
@@ -70,8 +72,8 @@ class Detection:
 
         print(self.config_coord)
 
-        width = 460
-        height =460
+        width = 800
+        height =800
 
         des_pts = np.float32([[0,0],[width,0],[0,height],[width,height]])
         self.matrix = cv.getPerspectiveTransform(src_pts,des_pts)
@@ -103,7 +105,8 @@ class Detection:
             if not ret:
                 break
             
-            frame_p = cv.warpPerspective(frame,self.matrix,(700,500))
+            frame = cv.resize(frame,(800,800))  
+            frame_p = cv.warpPerspective(frame,self.matrix,(800,800))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Callibrate sides", frame)
@@ -140,8 +143,8 @@ class Detection:
             ret, frame = self.stream.read()
             if not ret:
                 break
-            
-            frame_p = cv.warpPerspective(frame,self.matrix,(460,460))
+            frame = cv.resize(frame,(800,800))
+            frame_p = cv.warpPerspective(frame,self.matrix,(800,800))
             for (x,y) in self.config_coord[4:]:
                 cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Callibrate sides",frame_p)
@@ -171,10 +174,10 @@ class Detection:
                 break
 
 
-            
+            frame = cv.resize(frame,(800,800))
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
-            frame = cv.warpPerspective(frame,self.matrix,(460,460))
+            frame = cv.warpPerspective(frame,self.matrix,(800,800))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
@@ -245,7 +248,7 @@ class Detection:
                 
                 cv.putText(lastFrame, text, org, font, fontScale, color, thickness, cv.LINE_AA)
 
-                lastFrame = cv.warpPerspective(lastFrame,self.matrix,(460,460))
+                #lastFrame = cv.warpPerspective(lastFrame,self.matrix,(460,460))
                 cv.imshow("Last Detected Frame",lastFrame)
                 cv.imshow("Last Detected Frame Mask",lastFrame_mask)
                 maxArea = 0
