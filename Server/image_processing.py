@@ -97,10 +97,12 @@ class Detection:
             if not ret:
                 break
             
-            frame = cv.warpPerspective(frame,self.tMatrix,(800,800))
+            frame_p = cv.warpPerspective(frame,self.tMatrix,(800,800))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
-            cv.imshow("Darts", frame)
+                cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
+            cv.imshow("Darts Original", frame)
+            cv.imshow("Darts Morphed",frame_p)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
