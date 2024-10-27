@@ -86,7 +86,7 @@ class Detection:
         #global y_factor
         #global x_start
         #global y_start
-        sBackSub = cv.createBackgroundSubtractorMOG2()
+        sBackSub = cv.createBackgroundSubtractorMOG2(dist2Threshold = 800)
         temp,lastFrame = self.stream.read()
         lastFrame_contour = None
         temp,lastFrame_mask = self.stream.read()
