@@ -16,6 +16,7 @@ class Detection:
         self.x = 0
         self.y = 0 
         self.tMatrix = None
+        self.rad = None
 
         self.config()
         self.DartLocation()
@@ -58,6 +59,7 @@ class Detection:
         bottom_left = [self.config_coord[3][0],self.config_coord[2][1]]
 
         bull = self.config_coord[4]
+        #Sets left and right to be equal
         if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
             self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
             self.config_coord[1] = (self.config_coord[1][0],bull[1])
@@ -65,12 +67,15 @@ class Detection:
             self.config_coord[1] = (bull[0]+(self.config_coord[3][0]+bull[0]),bull[1])
             self.config_coord[3] = (self.config_coord[3][0],bull[1])
         
-        if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
-            self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
-            self.config_coord[0] = (bull[0],self.config_coord[0][1])
-        else:
-            self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
-            self.config_coord[2] = (bull[0],self.config_coord[2][1])
+        self.rad = (self.config_coord[4][0]-self.config_coord[3][0])
+        self.config_coord[0] = (bull[0],bull[1]+(rad))
+        self.config_coord[2] = (bull[0],bull[1]-(rad))
+        #if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
+        #    self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
+        #    self.config_coord[0] = (bull[0],self.config_coord[0][1])
+        #else:
+        #    self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
+        #    self.config_coord[2] = (bull[0],self.config_coord[2][1])
         
         top_left_d = [self.config_coord[3][0],self.config_coord[0][1]]
         bottom_right_d = [self.config_coord[1][0],self.config_coord[2][1]]
@@ -95,8 +100,9 @@ class Detection:
             if not ret:
                 break
             
-            frame_p = cv.warpPerspective(frame,self.tMatrix,(800,800))
+            frame_p = cv.warpPerspective(frame,self.tMatrix,(self.rad*2,self.rad*2))
             for (x,y) in self.config_coord:
+                print(x,",",y)
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
                 cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts Original", frame)
@@ -131,7 +137,7 @@ class Detection:
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
 
-            frame = cv.warpPerspective(frame,self.tMatrix,(800,800))
+            frame = cv.warpPerspective(frame,self.tMatrix,(self.rad*2,self.rad*2))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
