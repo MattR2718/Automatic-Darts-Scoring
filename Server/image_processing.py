@@ -58,13 +58,13 @@ class Detection:
             self.config_coord[3] = (self.config_coord[3][0],bull[1])
         
         if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
-            self.config_coord[2] = (bull[0],bull[1]-(self.config_coord[2][1]-bull[1]))
+            self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
             self.config_coord[0] = (bull[0],self.config_coord[0][1])
         else:
-            self.config_coord[0] = (bull[0],bull[1]+(self.config_coord[0][1]+bull[1]))
+            self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
             self.config_coord[2] = (bull[0],self.config_coord[2][1])
-        self.x_start = self.config_coord[1][0]
-        self.y_start = self.config_coord[2][1]
+        self.x_start = self.config_coord[3][0]
+        self.y_start = self.config_coord[0][1]
         self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
         self.y_factor = 2/(self.config_coord[0][1]-self.config_coord[2][1])
         print(self.config_coord)
@@ -86,7 +86,9 @@ class Detection:
         #global y_factor
         #global x_start
         #global y_start
-        sBackSub = cv.createBackgroundSubtractorMOG2()
+
+        #changes MOG2 to KNN, added dist2thershold
+        sBackSub = cv.createBackgroundSubtractorKNN(dist2Threshold = 800)
         temp,lastFrame = self.stream.read()
         lastFrame_contour = None
         temp,lastFrame_mask = self.stream.read()
