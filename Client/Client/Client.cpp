@@ -3,22 +3,6 @@
 
 #include "Client.h"
 
-HelloImGui::ScreenSize get_screen_size() {
-
-    glfwInit();
-
-    // Get primary monitor
-    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
-    int monitorWidth = mode->width;
-    int monitorHeight = mode->height;
-
-    const HelloImGui::ScreenSize window_size = { monitorWidth * 0.5, monitorHeight * 0.5 };
-
-	return window_size;
-}
-
-
 int main(int argc, char** argv){
 
     std::vector<Player> players;
@@ -94,6 +78,11 @@ int main(int argc, char** argv){
                 shouldOpenModal = false;
                 ImGui::CloseCurrentPopup();
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Skip")) {
+                shouldOpenModal = false;
+                ImGui::CloseCurrentPopup();
+            }
 
             ImGui::EndPopup();
         }
@@ -101,16 +90,23 @@ int main(int argc, char** argv){
         for (Player& p : players) {
             p.displayPlayer();
         }
+    };
 
-        if (ImGui::Button("Bye!")) {
-            HelloImGui::GetRunnerParams()->appShallExit = true;
-        }
-        };
 
-    HelloImGui::Run(guiFunction, "Hello, globe", true);
+    HelloImGui::Run(guiFunction, "Darts Scorer", true, true);
 
     client.stop();
 
     return 0;
 }
 
+//#ifdef _WIN32
+//#include <windows.h>
+//
+//// Windows entry point when using /SUBSYSTEM:WINDOWS
+//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+//{
+//    // Call the standard main function
+//    return main(__argc, __argv);
+//}
+//#endif
