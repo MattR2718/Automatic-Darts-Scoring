@@ -1,8 +1,9 @@
 import cv2 as cv
-
+import time
 
 class Detection:
-    def __init__(self):
+    def __init__(self, server):
+        self.server = server
         self.stream = cv.VideoCapture(0)
 
         self.counter = 0
@@ -47,21 +48,11 @@ class Detection:
         
         #stream.release()
         cv.destroyAllWindows()
-        print(self.config_coord)
+        #print(self.config_coord)
         self.x_start = self.config_coord[1][0]
         self.y_start = self.config_coord[2][1]
         self.x_factor = 2/(self.config_coord[0][0]-self.config_coord[1][0])
         self.y_factor = 2/(self.config_coord[3][1]-self.config_coord[2][1])
-
-
-    
-
-
-
-
-
-        
-
 
     def DartLocation(self):
         #global x_factor
@@ -75,6 +66,8 @@ class Detection:
         maxArea = 0
         self.x_bot = 0
         self.y_bot = 0
+        
+
         while True:
             ret, frame = self.stream.read()
             if frame is None:
@@ -96,6 +89,9 @@ class Detection:
 
             #background substracted with lighter colours set to white
             cv.imshow("Threshold mask",fgMask_th)
+
+
+            #time.sleep(7) # Wait 7 seconds before throwing
 
             #find contours
             contours, hierarchy = cv.findContours(fgMask_th, cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
@@ -142,28 +138,26 @@ class Detection:
                 self.y = ((self.y_bot-self.y_start)*self.y_factor)-1
                 self.y = self.y * (-1)
                 self.y  ='{0:.3f}'.format(self.y)
-                print(self.x,self.y)
+                #print(self.x,self.y)
                 text = f"X: +{self.x}+, Y: +{self.y}"
                 org = (50, 50)   
                 font = cv.FONT_HERSHEY_SIMPLEX  
                 fontScale = 0.5 
                 color = (255,255, 255)   
                 thickness = 2  
-
-
                 
                 cv.putText(lastFrame, text, org, font, fontScale, color, thickness, cv.LINE_AA)
-
 
                 cv.imshow("Last Detected Frame",lastFrame)
                 cv.imshow("Last Detected Frame Mask",lastFrame_mask)
                 maxArea = 0
+                self.server.send_coords(self.x,self.y)
             #quit stream
+
+
 
             cv.imshow('Stream',frame)
             if (cv.waitKey(1)& 0xFF == ord('q')):
                 break
 
-
-
-det = Detection()
+     
