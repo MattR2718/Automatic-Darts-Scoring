@@ -33,27 +33,42 @@ int main(int argc, char** argv){
 
     std::vector<Point> points;
 
+    DoubleClient client("", "");
 
-    auto guiFunction = [&players, &points]() {
+
+    auto guiFunction = [&players, &client]() {
 
         ImGui::ShowDemoWindow();
 
 		ImGui::InputText("Server IP", server_ip, 16);
         ImGui::SameLine();
         if (ImGui::Button("Connect")) {
-			boost::asio::io_context io_context;
+			//boost::asio::io_context io_context;
 			std::string sip = std::string(server_ip);
-			ClientClass client(io_context, sip);
+			//ClientClass client(io_context, sip);
+
+			//getDarts(sip, points);
 			
-			client.listen(points);
+			//client.listen(points);
+        
+			client.setServerIP(sip);
+			client.setPort("5050");
+            client.start();
+
         }
 
-		if (points.size() > 0) {
-            for (Player& p : players) {
-                p.addPoint(points[0].x, points[0].y);
-				points.erase(points.begin());
-            }
+		if (client.isConnected()) {
+			double value1, value2;
+			if (client.getLatestValues(value1, value2)) {
+                for (auto& p : players) {
+                    if (p.getTurn()) {
+                        p.addPoint(value1, value2);
+                    }
+                }
+			}
 		}
+
+		
 
         for (Player& p : players) {
 			p.displayPlayer();
@@ -63,6 +78,9 @@ int main(int argc, char** argv){
             HelloImGui::GetRunnerParams()->appShallExit = true;
         };
     HelloImGui::Run(guiFunction, "Hello, globe", true);
+
+    client.stop();
+
     return 0;
 }
 
