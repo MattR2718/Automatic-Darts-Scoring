@@ -15,6 +15,7 @@ class Detection:
         self.y_start = 0
         self.x = 0
         self.y = 0 
+        self.matrix = None
 
         self.config()
         self.DartLocation()
@@ -36,7 +37,7 @@ class Detection:
         cv.namedWindow("Callibrate corners")
         cv.setMouseCallback("Callibrate corners", self.get_mouse_coordinates)
 
-        while self.counter < 9:
+        while self.counter < 4:
             ret, frame = self.stream.read()
             if not ret:
                 break
@@ -65,12 +66,6 @@ class Detection:
         bottom_left = list(self.config_coord[2])
         bottom_right = list(self.config_coord[3])
 
-        top = self.config_coord[4]
-        right = self.config_coord[5]
-        bottom = self.config_coord[6]
-        left = self.config_coord[7]
-        bull = self.config_coord[8]
-
         src_pts = np.float32([top_left,top_right,bottom_left,bottom_right])
 
         print(self.config_coord)
@@ -79,7 +74,7 @@ class Detection:
         height =460
 
         des_pts = np.float32([[0,0],[width,0],[0,height],[width,height]])
-        matrix = cv.getPerspectiveTransform(src_pts,des_pts)
+        self.matrix = cv.getPerspectiveTransform(src_pts,des_pts)
         #bull = self.config_coord[4]
         #if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
         #    self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
@@ -94,22 +89,62 @@ class Detection:
         #else:
         #    self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
         #    self.config_coord[2] = (bull[0],self.config_coord[2][1])
-        self.x_start = self.config_coord[3][0]
-        self.y_start = self.config_coord[0][1]
+        #self.x_start = self.config_coord[3][0]
+        #self.y_start = self.config_coord[0][1]
         #self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
         #self.y_factor = 2/(self.config_coord[2][1]-self.config_coord[0][1])
         print(self.config_coord)
+
+        cv.namedWindow("Callibrate sides")
+        cv.setMouseCallback("Callibrate sides", self.get_mouse_coordinates)
+        self.counter = 0
+        while self.counter < 5:
+            ret, frame = self.stream.read()
+            if not ret:
+                break
+            
+            frame_p = cv.warpPerspective(frame,self.matrix,(700,500))
+            for (x,y) in self.config_coord:
+                cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
+            cv.imshow("Callibrate sides", frame)
+            cv.imshow("Callibrate sides",frame_p)
+
+            if cv.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        top = self.config_coord[4]
+        right = self.config_coord[5]
+        bottom = self.config_coord[6]
+        left = self.config_coord[7]
+        bull = self.config_coord[8]
+
+        if (right[0]-bull[0])>(bull[0]-left[0]):
+            self.config_coord[7] = (bull[0]-(self.config_coord[5][0]-bull[0]),bull[1])
+            self.config_coord[5] = (self.config_coord[5][0],bull[1])
+        else:
+            self.config_coord[5] = (bull[0]+(self.config_coord[7][0]+bull[0]),bull[1])
+            self.config_coord[7] = (self.config_coord[7][0],bull[1])
+        
+        if (bull[1]-top[1])>(bottom[1]-bull[1]):
+            self.config_coord[6] = (bull[0],bull[1]+(self.config_coord[4][1]-bull[1]))
+            self.config_coord[4] = (bull[0],self.config_coord[4][1])
+        else:
+            self.config_coord[4] = (bull[0],bull[1]-(self.config_coord[6][1]-bull[1]))
+            self.config_coord[6] = (bull[0],self.config_coord[6][1])
+        self.x_start = self.config_coord[7][0]
+        self.y_start = self.config_coord[4][1]
+        self.x_factor = 2/(self.config_coord[5][0]-self.config_coord[7][0])
+        self.y_factor = 2/(self.config_coord[6][1]-self.config_coord[4][1])
 
         while True:
             ret, frame = self.stream.read()
             if not ret:
                 break
             
-            frame_p = cv.warpPerspective(frame,matrix,(700,500))
+            frame_p = cv.warpPerspective(frame,self.matrix,(460,460))
             for (x,y) in self.config_coord:
-                cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
-            cv.imshow("Darts", frame)
-            cv.imshow("Darts better",frame_p)
+                cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
+            cv.imshow("Callibrate sides",frame_p)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -139,7 +174,7 @@ class Detection:
             
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
-
+            frame = cv.warpPerspective(frame,self.matrix,(460,460))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
@@ -197,9 +232,7 @@ class Detection:
                 #global x
                 #global y
                 self.x = '{0:.3f}'.format(((self.x_bot-self.x_start)*self.x_factor)-1)
-                self.y = ((self.y_bot-self.y_start)*self.y_factor)-1
-                self.y = self.y * (-1)
-                self.y  ='{0:.3f}'.format(self.y)
+                self.y = '{0:.3f}'.format(((self.y_bot-self.y_start)*self.y_factor)-1)
                 #print(self.x,self.y)
                 text = f"X: +{self.x}+, Y: +{self.y}"
                 org = (50, 50)   
