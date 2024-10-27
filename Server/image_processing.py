@@ -58,10 +58,10 @@ class Detection:
             self.config_coord[3] = (self.config_coord[3][0],bull[1])
         
         if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
-            self.config_coord[2] = (bull[0],bull[1]-(self.config_coord[2][1]-bull[1]))
+            self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
             self.config_coord[0] = (bull[0],self.config_coord[0][1])
         else:
-            self.config_coord[0] = (bull[0],bull[1]+(self.config_coord[0][1]+bull[1]))
+            self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
             self.config_coord[2] = (bull[0],self.config_coord[2][1])
         self.x_start = self.config_coord[1][0]
         self.y_start = self.config_coord[2][1]
