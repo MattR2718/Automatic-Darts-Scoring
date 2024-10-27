@@ -1,5 +1,6 @@
 import cv2 as cv
 import time
+import numpy as np
 
 class Detection:
     def __init__(self,server):
@@ -49,6 +50,13 @@ class Detection:
         #stream.release()
         cv.destroyAllWindows()
         print(self.config_coord)
+
+        center = list(self.config_coord[4])
+        top = list(self.config_coord[0])
+        bottom = list(self.config_coord[2])
+        right = list(self.config_coord[1])
+        left = list(self.config_coord[3])
+
         bull = self.config_coord[4]
         if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
             self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
@@ -63,6 +71,20 @@ class Detection:
         else:
             self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
             self.config_coord[2] = (bull[0],self.config_coord[2][1])
+        
+        center_d = list(self.config_coord[4])
+        top_d = list(self.config_coord[0])
+        bottom_d = list(self.config_coord[2])
+        right_d = list(self.config_coord[1])
+        left_d = list(self.config_coord[3])
+
+        src_pts = np.array([left,right,top,bottom],dtype="float32")
+        des_pts = np.array([left_d,right_d,top_d,bottom_d],dtype="float32")
+
+        tMatrix = cv.getPerspectiveTransform(src_pts,des_pts)
+
+
+        diameter = (self.config_coord[4][0]-self.config_coord[3][0])*2
         self.x_start = self.config_coord[3][0]
         self.y_start = self.config_coord[0][1]
         self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
@@ -74,6 +96,7 @@ class Detection:
             if not ret:
                 break
             
+            frame = cv.warpPerspective(frame,tMatrix,(diameter,diameter))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts", frame)
