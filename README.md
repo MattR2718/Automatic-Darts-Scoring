@@ -1,5 +1,7 @@
 # Automatic Darts Scoring
 
+<img src="Assets/Logo.png" width="600" title="hover text">
+
 Automatic darts scoring using a singular camera.
 Scoring is done using OpenCV to detect darts, positions are sent over a network to a GUI allowing tracking of games.
 
