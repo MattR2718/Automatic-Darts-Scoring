@@ -96,7 +96,7 @@ class Detection:
             if not ret:
                 break
             
-            frame = cv.warpPerspective(frame,tMatrix,(diameter,diameter))
+            frame = cv.warpPerspective(frame,tMatrix,(500,500))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts", frame)
