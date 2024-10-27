@@ -1,5 +1,6 @@
 import cv2 as cv
 import time
+import numpy as np
 
 class Detection:
     def __init__(self,server):
@@ -32,41 +33,71 @@ class Detection:
         #global y_factor
         #global x_start
         #global y_start
-        cv.namedWindow("Darts")
-        cv.setMouseCallback("Darts", self.get_mouse_coordinates)
+        cv.namedWindow("Callibrate corners")
+        cv.setMouseCallback("Callibrate corners", self.get_mouse_coordinates)
 
-        # Loop until user clicks 4 times
-        while self.counter < 5:
+        while self.counter < 9:
             ret, frame = self.stream.read()
             if not ret:
                 break
 
-            cv.imshow("Darts", frame)
+            cv.imshow("Callibrate corners",frame)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
         
+        # Loop until user clicks 4 times
+        #while self.counter < 5:
+        #    ret, frame = self.stream.read()
+        #    if not ret:
+        #        break
+        #
+        #    cv.imshow("Darts", frame)
+        #
+        #    if cv.waitKey(1) & 0xFF == ord('q'):
+        #        break
+        
         #stream.release()
         cv.destroyAllWindows()
+
+        top_left = list(self.config_coord[0])
+        top_right = list(self.config_coord[1])
+        bottom_left = list(self.config_coord[2])
+        bottom_right = list(self.config_coord[3])
+
+        top = self.config_coord[4]
+        right = self.config_coord[5]
+        bottom = self.config_coord[6]
+        left = self.config_coord[7]
+        bull = self.config_coord[8]
+
+        src_pts = np.float32([top_left,top_right,bottom_left,bottom_right])
+
         print(self.config_coord)
-        bull = self.config_coord[4]
-        if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
-            self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
-            self.config_coord[1] = (self.config_coord[1][0],bull[1])
-        else:
-            self.config_coord[1] = (bull[0]+(self.config_coord[3][0]+bull[0]),bull[1])
-            self.config_coord[3] = (self.config_coord[3][0],bull[1])
-        
-        if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
-            self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
-            self.config_coord[0] = (bull[0],self.config_coord[0][1])
-        else:
-            self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
-            self.config_coord[2] = (bull[0],self.config_coord[2][1])
+
+        width = 500
+        height =500
+
+        des_pts = np.float32([[0,0],[width,0],[0,height],[width,height]])
+        matrix = cv.getPerspectiveTransform(src_pts,des_pts)
+        #bull = self.config_coord[4]
+        #if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
+        #    self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
+        #    self.config_coord[1] = (self.config_coord[1][0],bull[1])
+        #else:
+        #    self.config_coord[1] = (bull[0]+(self.config_coord[3][0]+bull[0]),bull[1])
+        #    self.config_coord[3] = (self.config_coord[3][0],bull[1])
+        #
+        #if (self.config_coord[0][1]-bull[1])>(bull[1]-self.config_coord[2][1]):
+        #    self.config_coord[2] = (bull[0],bull[1]+(self.config_coord[2][1]-bull[1]))
+        #    self.config_coord[0] = (bull[0],self.config_coord[0][1])
+        #else:
+        #    self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
+        #    self.config_coord[2] = (bull[0],self.config_coord[2][1])
         self.x_start = self.config_coord[3][0]
         self.y_start = self.config_coord[0][1]
-        self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
-        self.y_factor = 2/(self.config_coord[2][1]-self.config_coord[0][1])
+        #self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
+        #self.y_factor = 2/(self.config_coord[2][1]-self.config_coord[0][1])
         print(self.config_coord)
 
         while True:
@@ -74,6 +105,7 @@ class Detection:
             if not ret:
                 break
             
+            frame = cv.warpPerspective(frame,matrix,(width,height))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
             cv.imshow("Darts", frame)
