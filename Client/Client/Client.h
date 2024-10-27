@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 
 
-//#include "ClientClass.h"
+#include "ClientClass.h"
 #include "player.h"
 
 

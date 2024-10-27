@@ -97,10 +97,35 @@ void Player::setTurn(bool t){
 	turn = t;
 }
 
+bool Player::getTurn(){
+	return this->turn;
+}
+
 bool* Player::getTurnPtr(){
 	return &turn;
 }
 
 void Player::setOpTurnPtr(bool* t){
 	oppositePlayer = t;
+}
+
+void Player::addPoint(double x, double y){
+	DartMath dm;
+	int score = dm.getScore(x, y);
+	int set = -1;
+	for (int& i : manualLeg) {
+		if (i == 0) {
+			i = score;
+			set = i;
+			break;
+		}
+	}
+	if (set == 2) {
+		this->addLeg(manualLeg);
+		manualLeg = { 0, 0, 0 };
+		this->scrollTable = true;
+		turn = !turn;
+		*oppositePlayer = !*oppositePlayer;
+	}
+
 }

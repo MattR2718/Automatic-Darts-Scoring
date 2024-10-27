@@ -9,6 +9,8 @@
 
 #include <imgui.h>
 
+#include "DartMaths.h"
+
 class Player {
 public:
 	Player(std::string n = "Player");
@@ -19,9 +21,13 @@ public:
 
 	void setTurn(bool t);
 
+	bool getTurn();
+
 	bool* getTurnPtr();
 
 	void setOpTurnPtr(bool* t);
+
+	void addPoint(double x, double y);
 
 private:
 	std::string name = "";

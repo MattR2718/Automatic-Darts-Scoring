@@ -31,10 +31,29 @@ int main(int argc, char** argv){
     players[0].setOpTurnPtr(players[1].getTurnPtr());
     players[1].setOpTurnPtr(players[0].getTurnPtr());
 
+    std::vector<Point> points;
 
-    auto guiFunction = [&players]() {
+
+    auto guiFunction = [&players, &points]() {
 
         ImGui::ShowDemoWindow();
+
+		ImGui::InputText("Server IP", server_ip, 16);
+        ImGui::SameLine();
+        if (ImGui::Button("Connect")) {
+			boost::asio::io_context io_context;
+			std::string sip = std::string(server_ip);
+			ClientClass client(io_context, sip);
+			
+			client.listen(points);
+        }
+
+		if (points.size() > 0) {
+            for (Player& p : players) {
+                p.addPoint(points[0].x, points[0].y);
+				points.erase(points.begin());
+            }
+		}
 
         for (Player& p : players) {
 			p.displayPlayer();
