@@ -11,6 +11,8 @@ const int HEADER = 64; // Bytes
 const int PORT = 5050;
 const std::string DISCONNECT_MESSAGE = "!DISCONNECT";
 
+char server_ip[16]{ 0 };
+
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
@@ -96,7 +98,7 @@ std::vector<Point> getDarts() {
     try {
         boost::asio::io_context io_context;
 
-        std::string server_ip = boost::asio::ip::host_name();
+        //std::string server_ip = boost::asio::ip::host_name();
 
         ClientClass client(io_context, server_ip);
 

@@ -4,8 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <algorithm>
+#include <numeric>
 
 #include <imgui.h>
+
+#include "DartMaths.h"
 
 class Player {
 public:
@@ -14,6 +18,16 @@ public:
 	void displayPlayer();
 
 	void addLeg(std::array<int, 3> leg);
+
+	void setTurn(bool t);
+
+	bool getTurn();
+
+	bool* getTurnPtr();
+
+	void setOpTurnPtr(bool* t);
+
+	void addPoint(double x, double y);
 
 private:
 	std::string name = "";
@@ -24,5 +38,11 @@ private:
 
 	inline static int uid = 1;
 	int pid = -1;
+
+	bool scrollTable = true;
+
+	bool turn = false;
+
+	bool* oppositePlayer = nullptr;
 
 };
