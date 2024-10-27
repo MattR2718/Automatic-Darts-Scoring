@@ -10,7 +10,7 @@ Player::Player(std::string n){
 	}
 }
 
-void Player::displayPlayer(){
+void Player::displayPlayer(int startingScore){
 	if (turn) {
 		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255));
 	}
@@ -21,7 +21,7 @@ void Player::displayPlayer(){
 	static ImGuiTableFlags flags = ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
 	const ImVec2 outer_size = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 7);
 
-	if (ImGui::BeginTable(std::string("##" + name).c_str(), (int)history.size(), flags, outer_size)) {
+	if (ImGui::BeginTable(std::string("##" + name + std::to_string(pid)).c_str(), (int)history.size(), flags, outer_size)) {
 
 		//ImGui::SetColumnWidth(-1, 100.0);
 
@@ -63,9 +63,9 @@ void Player::displayPlayer(){
 
 	}
 
-	ImGui::InputInt3(std::string("Leg##" + std::to_string(this->pid)).c_str(), manualLeg.data());
+	ImGui::InputInt3(std::string("##" + std::to_string(this->pid)).c_str(), manualLeg.data());
 	ImGui::SameLine();
-	if (ImGui::Button(std::string("Add Leg##" + std::to_string(this->pid)).c_str())) {
+	if (ImGui::Button(std::string("Add Throw##" + std::to_string(this->pid)).c_str())) {
 		if (turn) {
 			this->addLeg(manualLeg);
 			manualLeg = { 0, 0, 0 };
@@ -80,11 +80,10 @@ void Player::displayPlayer(){
 			return sum + std::reduce(a.begin(), a.end(), 0);
 		});
 
-	ImGui::Text("Score: %d", total);
+	ImGui::Text("Score: %d", startingScore - total);
 	ImGui::Text("Average: %f", total / (float)history.size());
-
-
-
+	ImGui::Text("Legs Won: %d", legsWon);
+	ImGui::Text("Sets Won: %d", setsWon);
 
 	ImGui::Separator();
 }
@@ -109,7 +108,7 @@ void Player::setOpTurnPtr(bool* t){
 	oppositePlayer = t;
 }
 
-void Player::addPoint(int score){
+bool Player::addPoint(int score, int goal){
 	int set = -1;
 	for (int i = 0; i < manualLeg.size(); i++) {
 		if (manualLeg[i] == 0) {
@@ -128,5 +127,22 @@ void Player::addPoint(int score){
 	else if (set == -1) {
 		std::cerr << "Point not set, zero scored\n";
 	}
-	
+
+	if (goal == std::reduce(history.begin(), history.end(), 0,
+		[](int sum, const std::array<int, 3>&a) {
+			return sum + std::reduce(a.begin(), a.end(), 0);
+		}))
+	{
+		this->legsWon++;
+		if (legsWon == 3) {
+			setsWon++;
+			legsWon = 0;
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::clearHistory() {
+	history = { {0, 0, 0} };
 }

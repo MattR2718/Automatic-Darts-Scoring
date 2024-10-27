@@ -13,7 +13,7 @@ class Player {
 public:
 	Player(std::string n = "Player");
 
-	void displayPlayer();
+	void displayPlayer(int startingScore);
 
 	void addLeg(std::array<int, 3> leg);
 
@@ -25,12 +25,16 @@ public:
 
 	void setOpTurnPtr(bool* t);
 
-	void addPoint(int score);
+	bool addPoint(int score, int goal);
+
+	void clearHistory();
+
+	int legsWon = 0;
 
 private:
 	std::string name = "";
 	int score = 0;
-	std::vector<std::array<int, 3>> history = { {4, 5, 6}, {0, 4, 6}, {8, 98, 180} };
+	std::vector<std::array<int, 3>> history = { {0, 0, 0} };
 
 	std::array<int, 3> manualLeg{ 0, 0, 0 };
 
@@ -42,5 +46,7 @@ private:
 	bool turn = false;
 
 	bool* oppositePlayer = nullptr;
+
+	int setsWon = 0;
 
 };
