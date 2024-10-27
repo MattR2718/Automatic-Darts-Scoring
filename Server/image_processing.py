@@ -1,6 +1,5 @@
 import cv2 as cv
 import time
-import numpy as np
 
 class Detection:
     def __init__(self,server):
@@ -15,7 +14,6 @@ class Detection:
         self.y_start = 0
         self.x = 0
         self.y = 0 
-        self.tMatrix = None
 
         self.config()
         self.DartLocation()
@@ -51,12 +49,6 @@ class Detection:
         #stream.release()
         cv.destroyAllWindows()
         print(self.config_coord)
-
-        top_left = [self.config_coord[3][0],self.config_coord[0][1]]
-        bottom_right = [self.config_coord[1][0],self.config_coord[2][1]]
-        top_right = [self.config_coord[1][0],self.config_coord[0][1]]
-        bottom_left = [self.config_coord[3][0],self.config_coord[2][1]]
-
         bull = self.config_coord[4]
         if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
             self.config_coord[3] = (bull[0]-(self.config_coord[1][0]-bull[0]),bull[1])
@@ -71,19 +63,6 @@ class Detection:
         else:
             self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
             self.config_coord[2] = (bull[0],self.config_coord[2][1])
-        
-        top_left_d = [self.config_coord[3][0],self.config_coord[0][1]]
-        bottom_right_d = [self.config_coord[1][0],self.config_coord[2][1]]
-        top_right_d = [self.config_coord[1][0],self.config_coord[0][1]]
-        bottom_left_d = [self.config_coord[3][0],self.config_coord[2][1]]
-
-        src_pts = np.array([top_left,top_right,bottom_left,bottom_right],dtype="float32")
-        des_pts = np.array([top_left_d,top_right_d,bottom_left_d,bottom_right_d],dtype="float32")
-
-        self.tMatrix = cv.getPerspectiveTransform(src_pts,des_pts)
-
-
-        diameter = (self.config_coord[4][0]-self.config_coord[3][0])*2
         self.x_start = self.config_coord[3][0]
         self.y_start = self.config_coord[0][1]
         self.x_factor = 2/(self.config_coord[1][0]-self.config_coord[3][0])
@@ -95,12 +74,9 @@ class Detection:
             if not ret:
                 break
             
-            frame_p = cv.warpPerspective(frame,self.tMatrix,(550,550))
             for (x,y) in self.config_coord:
                 cv.circle(frame,(x,y), radius = 5, color = (0,0,255),thickness=3)
-                cv.circle(frame_p,(x,y), radius = 5, color = (0,0,255),thickness=3)
-            cv.imshow("Darts Original", frame)
-            cv.imshow("Darts Morphed",frame_p)
+            cv.imshow("Darts", frame)
 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -131,7 +107,6 @@ class Detection:
             #COULD CROP FRAME BEFORE APPLYING MASK
             # ===================================    
 
-            frame = cv.warpPerspective(frame,self.tMatrix,(550,550))
             fgMask = sBackSub.apply(frame)
             fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
 
@@ -218,6 +193,3 @@ class Detection:
                 self.server.stop()
                 return
         
-
- 
-
