@@ -72,6 +72,7 @@ void Player::displayPlayer(int startingScore){
 			this->scrollTable = true;
 			turn = !turn;
 			*oppositePlayer = !*oppositePlayer;
+			lastlegopp->clear();
 		}
 	}
 
@@ -84,6 +85,42 @@ void Player::displayPlayer(int startingScore){
 	ImGui::Text("Average: %f", total / (float)history.size());
 	ImGui::Text("Legs Won: %d", legsWon);
 	ImGui::Text("Sets Won: %d", setsWon);
+
+	//------------dart board visualization
+	double dbheight = 400;
+	ImVec2 boardSize = ImVec2(dbheight, dbheight);
+	ImVec2 dartSize = ImVec2(20, 20);
+	ImVec2 basePos = ImVec2(ImGui::GetCursorPosX() + (dbheight*(195.0/400.0)), ImGui::GetCursorPosY() + (dbheight * (195.0 / 400.0)));
+	HelloImGui::ImageFromAsset("..\\assets\\board.png", boardSize);
+
+	ImVec2 initialPos = ImGui::GetCursorPos();
+	if (lastleg.size() > 0) {
+		for (int i = 0; i < lastleg.size(); i++) {
+			ImVec2 dartPos = ImVec2(basePos.x + (lastleg[i].first * (dbheight * (155.0 / 400.0))), basePos.y - (lastleg[i].second * (dbheight * (155.0 / 400.0))));
+			ImGui::SetCursorPos(dartPos);
+			HelloImGui::ImageFromAsset("..\\assets\\dart.jpg", dartSize);
+		}
+	}
+	ImGui::SetCursorPos(initialPos);
+
+	ImVec2 dart1Pos = ImVec2(basePos.x + (1 * (dbheight * (155.0 / 400.0))), basePos.y - (1 * (dbheight * (155.0 / 400.0)))); //need to adjust by coordinates of previous throw * -200 pixels
+	ImVec2 dart2Pos = ImVec2(basePos.x + (1 * (dbheight * (155.0 / 400.0))), basePos.y - (0 * (dbheight * (155.0 / 400.0))));
+	ImVec2 dart3Pos = ImVec2(basePos.x + (0 * (dbheight * (155.0 / 400.0))), basePos.y - (1 * (dbheight * (155.0 / 400.0))));
+	/*
+	ImVec2 initialPos = ImGui::GetCursorPos();
+
+	
+	ImGui::SetCursorPos(dart1Pos);
+	HelloImGui::ImageFromAsset("..\\assets\\dart.jpg", dartSize);
+	ImGui::SetCursorPos(dart2Pos);
+	HelloImGui::ImageFromAsset("..\\assets\\dart.jpg", dartSize);
+	ImGui::SetCursorPos(dart3Pos);
+	HelloImGui::ImageFromAsset("..\\assets\\dart.jpg", dartSize);
+
+	ImGui::SetCursorPos(initialPos);
+	*/
+
+	//--------------------------------------
 
 	ImGui::Separator();
 }

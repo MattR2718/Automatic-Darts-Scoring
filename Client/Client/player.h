@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <numeric>
 
+#include <hello_imgui/hello_imgui.h>
 #include <imgui.h>
 
 class Player {
@@ -30,6 +31,9 @@ public:
 	void clearHistory();
 
 	int legsWon = 0;
+
+	std::vector<std::pair<double, double>> lastleg;
+	std::vector<std::pair<double, double>> *lastlegopp;
 
 private:
 	std::string name = "";

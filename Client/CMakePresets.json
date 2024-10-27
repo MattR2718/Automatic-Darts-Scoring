@@ -10,7 +10,7 @@
           "cacheVariables": {
             "CMAKE_C_COMPILER": "cl.exe",
             "CMAKE_CXX_COMPILER": "cl.exe",
-            "CMAKE_TOOLCHAIN_FILE": "C:\\Users\\James\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+            "CMAKE_TOOLCHAIN_FILE": "C:\\Users\\matth\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
             "HELLOIMGUI_USE_IMGUI_CMAKE_PACKAGE": "ON"
           },
             "condition": {

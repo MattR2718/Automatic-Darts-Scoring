@@ -2,6 +2,7 @@
 //
 
 #include "Client.h"
+#include <GLFW/glfw3.h>
 
 int main(int argc, char** argv){
 
@@ -15,14 +16,31 @@ int main(int argc, char** argv){
     players[0].setOpTurnPtr(players[1].getTurnPtr());
     players[1].setOpTurnPtr(players[0].getTurnPtr());
 
+	players[0].lastlegopp = &players[1].lastleg;
+	players[1].lastlegopp = &players[0].lastleg;
+
     std::vector<Point> points;
 
     DoubleClient client("", "");
 
 	DartMath dm;
 
+	if (!glfwInit()) {
+		return -1;
+	}
+
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    int windowHeight = static_cast<int>(mode->height);
+	int windowWidth = static_cast<int>(mode->width);
+
 
     auto guiFunction = [&players, &client, &dm]() {
+        
+        SetupImGuiStyle();
+
+        HelloImGui::ImageFromAsset("..\\..\\..\\..\\..\\Assets\\Logo.png", ImVec2(800, 300));
         ImGui::InputText("Server IP", server_ip, 16);
         ImGui::SameLine();
 
@@ -73,6 +91,7 @@ int main(int argc, char** argv){
                     if (p.getTurn() && !shouldOpenModal && valuesChanged) {
                         modalValue1 = value1;
                         modalValue2 = value2;
+						p.lastleg.push_back(std::make_pair(value1, value2));
                         modalScore = dm.getScore(value1, value2);
                         currentPlayer = &p;
                         shouldOpenModal = true;
@@ -117,8 +136,9 @@ int main(int argc, char** argv){
         
     };
 
+	HelloImGui::ScreenSize ss{ windowWidth, windowHeight };
 
-    HelloImGui::Run(guiFunction, "Darts Scorer", true, true);
+    HelloImGui::Run(guiFunction, "Darts Scorer", true, true, ss);
 
     client.stop();
 
