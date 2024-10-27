@@ -60,8 +60,10 @@ int main(int argc, char** argv){
 		if (client.isConnected()) {
 			double value1, value2;
 			if (client.getLatestValues(value1, value2)) {
+                std::cout << "Value1: " << value1 << " Value2: " << value2 << '\n';
                 for (auto& p : players) {
                     if (p.getTurn()) {
+                        std::cout << "---------------- Value1: " << value1 << " Value2: " << value2 << '\n';
                         p.addPoint(value1, value2);
                     }
                 }
