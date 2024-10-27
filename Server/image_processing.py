@@ -52,11 +52,10 @@ class Detection:
         cv.destroyAllWindows()
         print(self.config_coord)
 
-        center = list(self.config_coord[4])
-        top = list(self.config_coord[0])
-        bottom = list(self.config_coord[2])
-        right = list(self.config_coord[1])
-        left = list(self.config_coord[3])
+        top_left = [self.config_coord[3][0],self.config_coord[0][1]]
+        bottom_right = [self.config_coord[1][0],self.config_coord[2][1]]
+        top_right = [self.config_coord[1][0],self.config_coord[0][1]]
+        bottom_left = [self.config_coord[3][0],self.config_coord[2][1]]
 
         bull = self.config_coord[4]
         if (self.config_coord[1][0]-bull[0])>(bull[0]-self.config_coord[3][0]):
@@ -73,14 +72,13 @@ class Detection:
             self.config_coord[0] = (bull[0],bull[1]-(self.config_coord[0][1]-bull[1]))
             self.config_coord[2] = (bull[0],self.config_coord[2][1])
         
-        center_d = list(self.config_coord[4])
-        top_d = list(self.config_coord[0])
-        bottom_d = list(self.config_coord[2])
-        right_d = list(self.config_coord[1])
-        left_d = list(self.config_coord[3])
+        top_left_d = [self.config_coord[3][0],self.config_coord[0][1]]
+        bottom_right_d = [self.config_coord[1][0],self.config_coord[2][1]]
+        top_right_d = [self.config_coord[1][0],self.config_coord[0][1]]
+        bottom_left_d = [self.config_coord[3][0],self.config_coord[2][1]]
 
-        src_pts = np.array([left,right,top,bottom],dtype="float32")
-        des_pts = np.array([left_d,right_d,top_d,bottom_d],dtype="float32")
+        src_pts = np.array([top_left,top_right,bottom_left,bottom_right],dtype="float32")
+        des_pts = np.array([top_left_d,top_right_d,bottom_left_d,bottom_right_d],dtype="float32")
 
         self.tMatrix = cv.getPerspectiveTransform(src_pts,des_pts)
 
