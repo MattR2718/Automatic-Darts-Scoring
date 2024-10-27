@@ -36,12 +36,32 @@ int main(int argc, char** argv){
         static double previousValue1 = 0.0;
         static double previousValue2 = 0.0;
 
+		static int startingScore = 501;
+
         if (ImGui::Button("Connect")) {
             std::string sip = std::string(server_ip);
             client.setServerIP(sip);
             client.setPort("5050");
             client.start();
         }
+		
+        ImGui::SameLine();
+
+        if (ImGui::Button("Reset Leg"))
+        {
+			for (auto& p : players)
+			{
+				p.clearHistory();
+			}
+        }
+
+		if (ImGui::InputInt("Starting Score", &startingScore))
+		{
+			for (auto& p : players)
+			{
+                p.clearHistory();
+			}
+		}
 
         if (client.isConnected()) {
             double value1, value2;
@@ -74,7 +94,11 @@ int main(int argc, char** argv){
             ImGui::InputInt("Score Prediction", &modalScore);
 
             if (ImGui::Button("Accept") && currentPlayer != nullptr) {
-                currentPlayer->addPoint(modalScore);
+                if (currentPlayer->addPoint(modalScore, startingScore)) {
+                    for (auto& p : players) {
+                        p.legsWon = 0;
+                    }
+                }
                 shouldOpenModal = false;
                 ImGui::CloseCurrentPopup();
             }
@@ -88,8 +112,9 @@ int main(int argc, char** argv){
         }
 
         for (Player& p : players) {
-            p.displayPlayer();
+            p.displayPlayer(startingScore);
         }
+        
     };
 
 
