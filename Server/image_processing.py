@@ -179,7 +179,7 @@ class Detection:
             # ===================================    
             frame = cv.warpPerspective(frame,self.matrix,(800,800))
             fgMask = sBackSub.apply(frame)
-            fgMask_th = cv.threshold(fgMask, 230,255, cv.THRESH_BINARY)[1]
+            fgMask_th = cv.threshold(fgMask, 50,255, cv.THRESH_BINARY)[1] #230,255
 
             #original stream
             cv.imshow('Stream',frame)
