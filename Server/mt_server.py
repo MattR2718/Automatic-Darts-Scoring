@@ -39,7 +39,7 @@ class Server:
                         try:
                             # Check for new data to send with a timeout
                             doubles = self.send_queue.get(timeout=0.1)
-                            data = struct.pack('dd', doubles[0], doubles[1])
+                            data = struct.pack('ff', doubles[0], doubles[1])
                             connection.sendall(data)
                             print(f"Sent values: {doubles[0]}, {doubles[1]}")
                         except queue.Empty:
