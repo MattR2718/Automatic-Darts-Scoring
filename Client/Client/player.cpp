@@ -21,7 +21,7 @@ void Player::displayPlayer(){
 	static ImGuiTableFlags flags = ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
 	const ImVec2 outer_size = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 7);
 
-	if (ImGui::BeginTable(std::string("##" + name).c_str(), (int)history.size(), flags, outer_size)) {
+	if (ImGui::BeginTable(std::string("##" + name + std::to_string(pid)).c_str(), (int)history.size(), flags, outer_size)) {
 
 		//ImGui::SetColumnWidth(-1, 100.0);
 
@@ -63,9 +63,9 @@ void Player::displayPlayer(){
 
 	}
 
-	ImGui::InputInt3(std::string("Leg##" + std::to_string(this->pid)).c_str(), manualLeg.data());
+	ImGui::InputInt3(std::string("##" + std::to_string(this->pid)).c_str(), manualLeg.data());
 	ImGui::SameLine();
-	if (ImGui::Button(std::string("Add Leg##" + std::to_string(this->pid)).c_str())) {
+	if (ImGui::Button(std::string("Add Throw##" + std::to_string(this->pid)).c_str())) {
 		if (turn) {
 			this->addLeg(manualLeg);
 			manualLeg = { 0, 0, 0 };

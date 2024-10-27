@@ -30,7 +30,7 @@ public:
 private:
 	std::string name = "";
 	int score = 0;
-	std::vector<std::array<int, 3>> history = { {4, 5, 6}, {0, 4, 6}, {8, 98, 180} };
+	std::vector<std::array<int, 3>> history = { {0, 0, 0} };
 
 	std::array<int, 3> manualLeg{ 0, 0, 0 };
 
