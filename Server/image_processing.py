@@ -196,7 +196,9 @@ class Detection:
             #find contours
             contours, hierarchy = cv.findContours(fgMask_th, cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
-            
+            dart_hit_time = None
+            delay = 2
+
             for contour in contours:
                 #calculates area of contours, and only outputs contours
                 #greater than threshold to remove redundancies and noise
@@ -205,24 +207,25 @@ class Detection:
                 #DART IS FROM CAMERA
                 #print(contour)
                 if area > 100:
-                    if (area > maxArea):
-                        maxArea = area
-                        lastFrame = frame.copy()
-                        lastFrame_mask = fgMask.copy()
-                        lastFrame_contour = contour
-                        Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
-                        self.x_bot = int(Bottom[0])
-                        self.y_bot = int(Bottom[1])
-                        cv.circle(lastFrame, Bottom, 8, (0,0, 255), -1)
-                        cv.drawContours(frame,contour,-1,(0,255,0),2)
-                        #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
-                        cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
-                    org = (50,50)
-                    font = cv.FONT_HERSHEY_SIMPLEX
-                    fontScale = 1
-                    color = (0,0,255)
-                    thickness = 1
-                    #lastFrame_mask = cv.putText(lastFrame_mask, Bottom,org, font, fontScale, color, thickness, cv.LINE_AA)
+                    if dart_hit_time is None:
+                        dart_hit_time = time.time()
+                        print("Hit Detected")
+                    
+                    elapsed_time = time.time() - dart_hit_time
+                    if elapsed_time >= delay:
+                        if (area > 100):
+                            maxArea = area
+                            lastFrame = frame.copy()
+                            lastFrame_mask = fgMask.copy()
+                            lastFrame_contour = contour
+                            Bottom = tuple(lastFrame_contour[lastFrame_contour[:, :, 1].argmax()][0])
+                            self.x_bot = int(Bottom[0])
+                            self.y_bot = int(Bottom[1])
+                            cv.circle(lastFrame, Bottom, 8, (0,0, 255), -1)
+                            cv.drawContours(frame,contour,-1,(0,255,0),2)
+                            #cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
+                            cv.drawContours(lastFrame,contour,-1,(0,255,0),2)
+                     
                 
             
             noMovement = True
